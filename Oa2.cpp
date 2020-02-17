@@ -192,7 +192,7 @@ void fillFw(std::vector<double> &Fw,int N,boost::mt19937 &rng)
 {
 		for (int i = 0; i < N; ++i)
 		{
-			Fw[i]=1.6;
+			Fw[i]=1.7;
 		}
 }
 
@@ -308,7 +308,7 @@ double iterateK(int N, double k,boost::mt19937 &rng,int caso,double r)
     ////////////////////////////////////////////////////////////////////
     harm_osc ho(G,B,N,M,K,L,F,W,rng);
     runge_kutta4 < state_type > stepper;
-	size_t steps = integrate_adaptive(stepper, ho, x , 0.0 , 50.0*2.0*M_PI/1.6 , 0.01, push_back_state_and_time( x_vec , times )); //1 funcion. 2 condiciones iniciales. 3 tiempo inicial. 4 tiempo final. 5 dt inicial. 6 vector de posicion y tiempo
+	size_t steps = integrate_adaptive(stepper, ho, x , 0.0 , 100.0*2.0*M_PI/1.7 , 0.01, push_back_state_and_time( x_vec , times )); //1 funcion. 2 condiciones iniciales. 3 tiempo inicial. 4 tiempo final. 5 dt inicial. 6 vector de posicion y tiempo
 	printci(x_vec,steps,N,r);
 	truer=calcamp(steps,x_vec,N,r,Amax,Amin);
 	printAmp(k,r,truer,Amax,Amin);
