@@ -364,15 +364,23 @@ int main()
 		FILE *w= fopen(buf, "w");
         fclose(w);
         int j=0;
+        int itera=0;
     	while(1==1)
     	{
     		k=dk*j;
 			truer=iterateK(N,k,rng,j,R_start+i*dr);
 			if(R_start+i*dr < truer-0.00001 || R_start+i*dr > truer+0.00001 || R_start+i*dr > 1.0-0.00001 ||  R_start+i*dr < 0.00001)
 			{
-				printkcrit(k,R_start+i*dr);
-				printf("finished r=%lf\n",R_start+i*dr);
-				break;
+				if(itera==0)
+				{
+					printkcrit(k,R_start+i*dr);
+					printf("finished r=%lf\n",R_start+i*dr);
+				}
+				if(itera==2)
+				{
+					break;
+				}
+				itera++;
 			}
 			j++;    	
 		}
