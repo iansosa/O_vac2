@@ -25,12 +25,16 @@ class harm_osc
     std::vector< double >& m_L;
     std::vector< double >& m_F;
     std::vector< double >& m_W;
+    boost::mt19937 &m_rng;
+
 
 	public:
-    harm_osc( std::vector< double > &G,std::vector< double > &B, int N, std::vector< double > &M,arma::Mat<double> &K,std::vector< double > &L,std::vector< double > &F,std::vector< double > &W ) : m_G(G) , m_B(B) , m_N(N), m_M(M) , m_K(K) , m_L(L), m_F(F), m_W(W) { }
+    harm_osc( std::vector< double > &G,std::vector< double > &B, int N, std::vector< double > &M,arma::Mat<double> &K,std::vector< double > &L,std::vector< double > &F,std::vector< double > &W ,boost::mt19937 &rng) : m_G(G) , m_B(B) , m_N(N), m_M(M) , m_K(K) , m_L(L), m_F(F), m_W(W), m_rng(rng) { }
 
     void operator() ( const state_type &x , state_type &dxdt , const double t  )
     {
+    	boost::uniform_real<> unif( -1, 1);//la distribucion de probabilidad uniforme entre cero y 2pi
+    	boost::variate_generator< boost::mt19937&, boost::uniform_real<> > gen( m_rng , unif );//gen es una funcion que toma el engine y la distribucion y devuelve el numero random
     	double sum=0;
         for (int i = 0; i < m_N; ++i)
         {
@@ -46,7 +50,7 @@ class harm_osc
     		if(t<=2000000)
     		{
         		dxdt[2*i]=x[2*i+1];
-        		dxdt[2*i+1]= -(m_G[i]/m_M[i])*x[2*i+1]-(m_K(i,i)/m_M[i])*(x[2*i])-(m_B[i]/m_M[i])*pow(x[2*i],3)+m_F[i]*cos(m_W[i]*t)-sum;
+        		dxdt[2*i+1]= -(m_G[i]/m_M[i])*x[2*i+1]-(m_K(i,i)/m_M[i])*(x[2*i])-(m_B[i]/m_M[i])*pow(x[2*i],3)+m_F[i]*cos(m_W[i]*t)-sum+gen()*0.001;
     		}
     		else
     		{
@@ -302,7 +306,7 @@ double iterateK(int N, double k,boost::mt19937 &rng,int caso,double r)
 		inicialcond(x,N,rng,1,r);
 	}
     ////////////////////////////////////////////////////////////////////
-    harm_osc ho(G,B,N,M,K,L,F,W);
+    harm_osc ho(G,B,N,M,K,L,F,W,rng);
     runge_kutta4 < state_type > stepper;
 	size_t steps = integrate_adaptive(stepper, ho, x , 0.0 , 50.0*2.0*M_PI/1.6 , 0.01, push_back_state_and_time( x_vec , times )); //1 funcion. 2 condiciones iniciales. 3 tiempo inicial. 4 tiempo final. 5 dt inicial. 6 vector de posicion y tiempo
 	printci(x_vec,steps,N,r);
@@ -353,7 +357,7 @@ int main()
 	FILE *v= fopen("Kcrit.txt", "w");
     fclose(v);
 
-	#pragma omp parallel for schedule(static) private(buf,truer,k)
+	#pragma omp parallel for schedule(static) private(buf,truer,k,rng)
     for (int i = 0; i < R_step; ++i)
     {
 		sprintf(buf, "Amp_r%.2f.txt", R_start+i*dr);
