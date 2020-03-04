@@ -38,12 +38,25 @@ int main()
     printf("w: ");
     std::cin >>w; 
 
+	char buf[100];
+	sprintf(buf, "stability_w%.2f.txt", w);
+    double amp;
 
-	FILE *f= fopen("stability.txt", "w");
+
+	FILE *f= fopen(buf, "w");
 
 	for (int i = 0; i < 100; ++i)
 	{
-		fprintf(f, "%lf   %lf   %lf   \n",i/100.0,analize(i),w);
+		amp=analize(i);
+		if(amp>2)
+		{
+		fprintf(f, "%lf   %lf   %lf   %d   \n",i/100.0,amp,w,1);
+		}
+		if(amp<2)
+		{
+		fprintf(f, "%lf   %lf   %lf   %d   \n",i/100.0,amp,w,0);
+		}
+
 
 	}
 	
