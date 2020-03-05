@@ -20,8 +20,8 @@ int main()
     double amp;
 
 	FILE *r= fopen("stability.txt", "w");
-	FILE *s1= fopen("stability_s1.txt", "w");
-	FILE *s0= fopen("stability_s0.txt", "w");
+	FILE *s1= fopen("stability_s1.txt", "r");
+	FILE *s0= fopen("stability_s0.txt", "r");
 
 	double aux1,aux2,aux3,aux4;
 	int aux5;
