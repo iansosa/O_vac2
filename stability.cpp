@@ -12,7 +12,7 @@
 #include <boost/numeric/odeint.hpp>
 #include <boost/random.hpp>
 
-double analize(int i)
+double analize(int i,double *k)
 {
 	char buf[100];
 	sprintf(buf, "Amp_r%.2f.txt", i/100.0);
@@ -23,6 +23,7 @@ double analize(int i)
 	while(fscanf(f, "%lf %lf %lf %lf %lf", &aux1,&aux2,&aux3,&aux4,&aux5) != EOF)
 	{
 		amp=aux5;
+		*k=aux1;
 	}
 
 	fclose(f);
@@ -41,20 +42,21 @@ int main()
 	char buf[100];
 	sprintf(buf, "stability_w%.2f.txt", w);
     double amp;
+    double k=0;
 
 
 	FILE *f= fopen(buf, "w");
 
 	for (int i = 0; i < 100; ++i)
 	{
-		amp=analize(i);
+		amp=analize(i,&k);
 		if(amp>2)
 		{
-		fprintf(f, "%lf   %lf   %lf   %d   \n",i/100.0,amp,w,1);
+		fprintf(f, "%lf   %lf   %lf   %lf   %d   \n",i/100.0,amp,w,k,1);
 		}
 		if(amp<2)
 		{
-		fprintf(f, "%lf   %lf   %lf   %d   \n",i/100.0,amp,w,0);
+		fprintf(f, "%lf   %lf   %lf   %lf   %d   \n",i/100.0,amp,w,k,0);
 		}
 
 
