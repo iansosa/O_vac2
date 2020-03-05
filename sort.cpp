@@ -26,7 +26,7 @@ int main()
 	double aux1,aux2,aux3,aux4;
 	int aux5;
 
-	while(fscanf(f, "%lf %lf %lf %lf %d", &aux1,&aux2,&aux3,&aux4,&aux5) != EOF)
+	while(fscanf(r, "%lf %lf %lf %lf %d", &aux1,&aux2,&aux3,&aux4,&aux5) != EOF)
 	{
 		if(aux5==0)
 		{
